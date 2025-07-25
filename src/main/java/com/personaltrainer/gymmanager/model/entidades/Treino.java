@@ -26,6 +26,7 @@ public class Treino {
     private Long id;
     @ManyToOne
     private Aluno aluno;
+    @ElementCollection(targetClass = TipoTreino.class)
     @Enumerated(EnumType.STRING)
     private TipoTreino tipoTreino;
     @ElementCollection(targetClass = GrupoMuscular.class)

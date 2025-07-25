@@ -18,7 +18,6 @@ public class TreinoService {
     }
 
     public Treino criarTreino(Treino treino) {
-        // logica
         return treinoRepository.save(treino);
     }
 
@@ -26,10 +25,16 @@ public class TreinoService {
         return treinoRepository.findById(id).orElseThrow(() -> new RuntimeException("Treino não encontrado"));
     }
 
-    public Treino atualizarTreino(Long id, Treino treino) {
-        treino.setId(id);
-        //logica
-        return treinoRepository.save(treino);
+    public Treino atualizarTreino(Long id, Treino treinoAtualizado) {
+        Treino treinoExistente = buscarTreino(id);
+        treinoExistente.setAluno(treinoAtualizado.getAluno());
+        treinoExistente.setTipoTreino(treinoAtualizado.getTipoTreino());
+        treinoExistente.setGruposMusculares(treinoAtualizado.getGruposMusculares());
+        treinoExistente.setQuantidadeSeries(treinoAtualizado.getQuantidadeSeries());
+        treinoExistente.setQuantidadeRepeticoes(treinoAtualizado.getQuantidadeRepeticoes());
+        treinoExistente.setCarga(treinoAtualizado.getCarga());
+        treinoExistente.setTipoEstimulo(treinoAtualizado.getTipoEstimulo());
+        return treinoRepository.save(treinoExistente);
     }
 
     public void deletarTreino(Long id) {

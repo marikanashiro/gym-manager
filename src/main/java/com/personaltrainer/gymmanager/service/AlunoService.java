@@ -18,18 +18,22 @@ public class AlunoService {
 
     public Aluno buscarAluno(Long id) {
         return alunoRepository.findById(id)
-        .orElseThrow(() -> 
-        new RuntimeException("Aluno não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
     }
 
     public Aluno criarAluno(Aluno aluno) {
-        //logica
         return alunoRepository.save(aluno);
     }
 
-    public Aluno atualizaAluno(Long id, Aluno aluno) {
-        //logica
-        return alunoRepository.save(aluno);
+    public Aluno atualizaAluno(Long id, Aluno alunoAtualizado) {
+        Aluno alunoExistente = buscarAluno(id);
+        alunoExistente.setNome(alunoAtualizado.getNome());
+        alunoExistente.setTelefone(alunoAtualizado.getTelefone());
+        alunoExistente.setEmail(alunoAtualizado.getEmail());
+        alunoExistente.setEndereco(alunoAtualizado.getEndereco());
+        alunoExistente.setDataNascimento(alunoAtualizado.getDataNascimento());
+        return alunoRepository.save(alunoExistente);
+
     }
 
     public void deletarAluno(Long id) {

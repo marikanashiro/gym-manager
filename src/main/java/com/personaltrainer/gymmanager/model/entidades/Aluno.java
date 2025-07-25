@@ -1,6 +1,6 @@
 package com.personaltrainer.gymmanager.model.entidades;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,5 +20,5 @@ public class Aluno {
     private String telefone;
     private String email;
     private String endereco;
-    private Date dataNascimento;
+    private LocalDate dataNascimento;
 }

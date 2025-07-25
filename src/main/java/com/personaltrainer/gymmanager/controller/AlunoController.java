@@ -38,7 +38,7 @@ public class AlunoController {
     }
 
     @PutMapping("/{id}")
-    public Aluno atualizaAluno(@PathVariable Long id, @RequestBody Aluno aluno) {
+    public Aluno atualizarAluno(@PathVariable Long id, @RequestBody Aluno aluno) {
         return alunoService.atualizaAluno(id, aluno);
     }
 
