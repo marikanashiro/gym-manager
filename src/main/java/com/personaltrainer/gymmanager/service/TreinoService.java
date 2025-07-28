@@ -7,7 +7,10 @@ import org.springframework.stereotype.Service;
 import com.personaltrainer.gymmanager.model.entidades.Treino;
 import com.personaltrainer.gymmanager.repository.TreinoRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class TreinoService {
     
     @Autowired
