@@ -3,6 +3,7 @@ package com.personaltrainer.gymmanager.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.personaltrainer.gymmanager.model.entidades.Aluno;
+import com.personaltrainer.gymmanager.model.dtos.AlunoRequestDTO;
+import com.personaltrainer.gymmanager.model.dtos.AlunoResponseDTO;
 import com.personaltrainer.gymmanager.service.AlunoService;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/alunos")
 public class AlunoController {
@@ -23,22 +26,22 @@ public class AlunoController {
     private AlunoService alunoService;
 
     @GetMapping
-    public List<Aluno> listarAlunos() {
+    public List<AlunoResponseDTO> listarAlunos() {
         return alunoService.listarAlunos();
     }
 
     @GetMapping("/{id}")
-    public Aluno buscarAluno(@PathVariable Long id) {
+    public AlunoResponseDTO buscarAluno(@PathVariable Long id) {
         return alunoService.buscarAluno(id);
     }
 
     @PostMapping
-    public Aluno criarAluno(@RequestBody Aluno aluno) {
+    public AlunoResponseDTO criarAluno(@RequestBody AlunoRequestDTO aluno) {
         return alunoService.criarAluno(aluno);
     }
 
     @PutMapping("/{id}")
-    public Aluno atualizarAluno(@PathVariable Long id, @RequestBody Aluno aluno) {
+    public AlunoResponseDTO atualizarAluno(@PathVariable Long id, @RequestBody AlunoRequestDTO aluno) {
         return alunoService.atualizaAluno(id, aluno);
     }
 

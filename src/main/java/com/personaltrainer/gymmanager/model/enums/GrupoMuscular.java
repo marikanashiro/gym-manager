@@ -1,5 +1,16 @@
 package com.personaltrainer.gymmanager.model.enums;
 
 public enum GrupoMuscular {
-    COSTAS, PEITO, PERNA, OMBRO, BICEPS, TRICEPS
+    TRAPEZIO, 
+    DELTOIDE, 
+    PEITORAL, 
+    DORSAL, 
+    ISQUIOTIBIAL, 
+    QUADRICEPS, 
+    GLUTEO, 
+    BICEPS, 
+    TRICEPS, 
+    ANTEBRACO, 
+    PANTURRILHA, 
+    ABDOMINAL
 }
