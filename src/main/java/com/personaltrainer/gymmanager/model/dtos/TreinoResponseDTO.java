@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.personaltrainer.gymmanager.model.entidades.Aluno;
-import com.personaltrainer.gymmanager.model.entidades.TipoTreino;
 import com.personaltrainer.gymmanager.model.enums.TipoEstimulo;
 
 public record TreinoResponseDTO(
@@ -13,7 +12,7 @@ public record TreinoResponseDTO(
     LocalDate dataCriacao,
     LocalDate dataExpiracao,
     TipoEstimulo tipoEstimulo,
-    List<TipoTreino> tipoTreinos
+    List<TipoTreinoResponseDTO> tipoTreinos
 ) {
     
 }
