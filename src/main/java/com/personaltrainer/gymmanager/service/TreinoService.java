@@ -1,5 +1,6 @@
 package com.personaltrainer.gymmanager.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,7 +29,7 @@ public class TreinoService {
     private TreinoResponseDTO entityToDTO(Treino treino) {
         return new TreinoResponseDTO(
                 treino.getId(),
-                treino.getAluno(),
+                treino.getAluno() != null ? treino.getAluno().getId() : null,
                 treino.getDataCriacao(),
                 treino.getDataExpiracao(),
                 treino.getTipoEstimulo(),
@@ -38,7 +39,7 @@ public class TreinoService {
     private TipoTreinoResponseDTO tipoTreinoToDTO(TipoTreino tipoTreino) {
         return new TipoTreinoResponseDTO(
                 tipoTreino.getId(),
-                tipoTreino.getTreino(),
+                tipoTreino.getTreino() != null ? tipoTreino.getTreino().getId() : null,
                 tipoTreino.getGruposMusculares(),
                 tipoTreino.getQuantidadeSeries(),
                 tipoTreino.getQuantidadeRepeticoes(),
@@ -51,12 +52,16 @@ public class TreinoService {
         treino.setDataCriacao(treinoRequestDTO.dataCriacao());
         treino.setDataExpiracao(treinoRequestDTO.dataExpiracao());
         treino.setTipoEstimulo(treinoRequestDTO.tipoEstimulo());
+
+        List<TipoTreino> tipoTreinos = new ArrayList<>();
         if (treinoRequestDTO.tipoTreinos() != null) {
-            List<TipoTreino> tipoTreinos = treinoRequestDTO.tipoTreinos()
-                    .stream().map(this::dtoToTipoTreinoEntity)
-                    .collect(Collectors.toList());
-            treino.setTipoTreinos(tipoTreinos);
+            for (TipoTreinoRequestDTO tipoDTO : treinoRequestDTO.tipoTreinos()) {
+                TipoTreino tipoTreino = dtoToTipoTreinoEntity(tipoDTO);
+                tipoTreino.setTreino(treino);
+                tipoTreinos.add(tipoTreino);
+            }
         }
+        treino.setTipoTreinos(tipoTreinos);
         return treino;
     }
 

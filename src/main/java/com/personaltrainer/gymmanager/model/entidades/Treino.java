@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.personaltrainer.gymmanager.model.enums.TipoEstimulo;
 
 import jakarta.persistence.CascadeType;
@@ -35,5 +36,6 @@ public class Treino {
     private LocalDate dataCriacao;
     private LocalDate dataExpiracao;
     @OneToMany(mappedBy = "treino", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
     private List<TipoTreino> tipoTreinos = new ArrayList<>();
 }

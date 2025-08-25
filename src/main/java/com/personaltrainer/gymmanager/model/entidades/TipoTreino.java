@@ -2,6 +2,7 @@ package com.personaltrainer.gymmanager.model.entidades;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.personaltrainer.gymmanager.model.enums.GrupoMuscular;
 
 import jakarta.persistence.ElementCollection;
@@ -25,6 +26,7 @@ public class TipoTreino {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "treino_id")
+    @JsonBackReference
     private Treino treino;
     @ElementCollection(targetClass = GrupoMuscular.class)
     @Enumerated(EnumType.STRING)

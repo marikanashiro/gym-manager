@@ -25,7 +25,7 @@ public class TipoTreinoService {
     private TipoTreinoResponseDTO entityToDTO(TipoTreino tipoTreino) {
         return new TipoTreinoResponseDTO(
             tipoTreino.getId(), 
-            tipoTreino.getTreino(), 
+            tipoTreino.getTreino() != null ? tipoTreino.getTreino().getId() : null, 
             tipoTreino.getGruposMusculares(), 
             tipoTreino.getQuantidadeSeries(),
             tipoTreino.getQuantidadeRepeticoes(), 
