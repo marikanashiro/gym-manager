@@ -26,23 +26,19 @@ public class TreinoService {
         return new TreinoResponseDTO(
             treino.getId(),
             treino.getAluno(),
-            treino.getTipoTreino(),
-            treino.getGruposMusculares(),
-            treino.getQuantidadeSeries(),
-            treino.getQuantidadeRepeticoes(),
-            treino.getCarga(),
-            treino.getTipoEstimulo());
+            treino.getDataCriacao(),
+            treino.getDataExpiracao(),
+            treino.getTipoEstimulo(),
+            treino.getTipoTreinos());
     }
 
     private Treino dtoToEntity(TreinoRequestDTO treinoRequestDTO) {
         Treino treino = new Treino();
         treino.setAluno(treinoRequestDTO.aluno());
-        treino.setTipoTreino(treinoRequestDTO.tipoTreino());
-        treino.setGruposMusculares(treinoRequestDTO.gruposMusculares());
-        treino.setQuantidadeSeries(treinoRequestDTO.quantidadeSeries());
-        treino.setQuantidadeRepeticoes(treinoRequestDTO.quantidadeRepeticoes());
-        treino.setCarga(treinoRequestDTO.carga());
+        treino.setDataCriacao(treinoRequestDTO.dataCriacao());
+        treino.setDataExpiracao(treinoRequestDTO.dataExpiracao());
         treino.setTipoEstimulo(treinoRequestDTO.tipoEstimulo());
+        treino.setTipoTreinos(treinoRequestDTO.tipoTreinos());
         return treino;
     }
 
@@ -72,11 +68,10 @@ public class TreinoService {
         if (treino.isPresent()) {
             Treino treinoAtualizado = treino.get();
             treinoAtualizado.setAluno(dto.aluno());
-            treinoAtualizado.setTipoTreino(dto.tipoTreino());
-            treinoAtualizado.setGruposMusculares(dto.gruposMusculares());
-            treinoAtualizado.setQuantidadeSeries(dto.quantidadeSeries());
-            treinoAtualizado.setQuantidadeRepeticoes(dto.quantidadeRepeticoes());
-            treinoAtualizado.setCarga(dto.carga());
+            treinoAtualizado.setTipoEstimulo(dto.tipoEstimulo());
+            treinoAtualizado.setDataCriacao(dto.dataCriacao());
+            treinoAtualizado.setDataExpiracao(dto.dataExpiracao());
+            treinoAtualizado.setTipoTreinos(dto.tipoTreinos());
             treinoAtualizado.setTipoEstimulo(dto.tipoEstimulo());
 
             // salvando as alterações
@@ -90,7 +85,7 @@ public class TreinoService {
 
     public void deletarTreino(Long id) {
         if (!treinoRepository.existsById(id)) {
-            throw new RuntimeException("Treino não encontrado");
+            throw new RuntimeException("Treino não encontrado.");
         }
         treinoRepository.deleteById(id);
     }

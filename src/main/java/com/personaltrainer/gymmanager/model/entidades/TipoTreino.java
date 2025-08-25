@@ -1,10 +1,10 @@
 package com.personaltrainer.gymmanager.model.entidades;
 
-import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
-import com.personaltrainer.gymmanager.model.enums.TipoEstimulo;
+import com.personaltrainer.gymmanager.model.enums.GrupoMuscular;
 
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -18,15 +18,16 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Treino {
+public class TipoTreino {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    private Aluno aluno;
+    private Treino treino;
+    @ElementCollection(targetClass = GrupoMuscular.class)
     @Enumerated(EnumType.STRING)
-    private TipoEstimulo tipoEstimulo;
-    private LocalDate dataCriacao;
-    private LocalDate dataExpiracao;
-    private List<TipoTreino> tipoTreinos;
+    private Set<GrupoMuscular> gruposMusculares;
+    private int quantidadeSeries;
+    private int quantidadeRepeticoes;
+    private String exercicios;
 }
