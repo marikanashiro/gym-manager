@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.personaltrainer.gymmanager.model.dtos.AlunoRequestDTO;
 import com.personaltrainer.gymmanager.model.dtos.AlunoResponseDTO;
+import com.personaltrainer.gymmanager.model.dtos.TipoTreinoResponseDTO;
+import com.personaltrainer.gymmanager.model.dtos.TreinoResponseDTO;
 import com.personaltrainer.gymmanager.model.entidades.Aluno;
 import com.personaltrainer.gymmanager.repository.AlunoRepository;
 
@@ -20,13 +22,30 @@ public class AlunoService {
     private AlunoRepository alunoRepository;
 
     private AlunoResponseDTO entityToDTO(Aluno aluno) {
+        List<TreinoResponseDTO> treinosDTO = aluno.getTreinos().stream().map(treino -> new TreinoResponseDTO(
+            treino.getId(),
+            treino.getAluno().getId(),
+            treino.getDataCriacao(),
+            treino.getDataExpiracao(),
+            treino.getTipoEstimulo(),
+            treino.getTipoTreinos().stream().map(tipoTreino -> new TipoTreinoResponseDTO(
+                tipoTreino.getId(),
+                tipoTreino.getTreino().getId(),
+                tipoTreino.getGruposMusculares(),
+                tipoTreino.getQuantidadeSeries(),
+                tipoTreino.getQuantidadeRepeticoes(),
+                tipoTreino.getExercicios()
+            )).collect(Collectors.toList())
+        )).collect(Collectors.toList());
+
         return new AlunoResponseDTO(
             aluno.getId(), 
             aluno.getNome(), 
             aluno.getTelefone(), 
             aluno.getEmail(), 
             aluno.getEndereco(), 
-            aluno.getDataNascimento());
+            aluno.getDataNascimento(),
+            treinosDTO);
     }
 
     private Aluno dtoToEntity(AlunoRequestDTO alunoRequestDTO) {

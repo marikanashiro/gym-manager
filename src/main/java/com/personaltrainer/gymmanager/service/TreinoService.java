@@ -12,8 +12,10 @@ import com.personaltrainer.gymmanager.model.dtos.TipoTreinoRequestDTO;
 import com.personaltrainer.gymmanager.model.dtos.TipoTreinoResponseDTO;
 import com.personaltrainer.gymmanager.model.dtos.TreinoRequestDTO;
 import com.personaltrainer.gymmanager.model.dtos.TreinoResponseDTO;
+import com.personaltrainer.gymmanager.model.entidades.Aluno;
 import com.personaltrainer.gymmanager.model.entidades.TipoTreino;
 import com.personaltrainer.gymmanager.model.entidades.Treino;
+import com.personaltrainer.gymmanager.repository.AlunoRepository;
 import com.personaltrainer.gymmanager.repository.TreinoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -25,6 +27,9 @@ public class TreinoService {
 
     @Autowired
     private TreinoRepository treinoRepository;
+
+    @Autowired
+    private AlunoRepository alunoRepository;
 
     private TreinoResponseDTO entityToDTO(Treino treino) {
         return new TreinoResponseDTO(
@@ -48,7 +53,6 @@ public class TreinoService {
 
     private Treino dtoToEntity(TreinoRequestDTO treinoRequestDTO) {
         Treino treino = new Treino();
-        treino.setAluno(treinoRequestDTO.aluno());
         treino.setDataCriacao(treinoRequestDTO.dataCriacao());
         treino.setDataExpiracao(treinoRequestDTO.dataExpiracao());
         treino.setTipoEstimulo(treinoRequestDTO.tipoEstimulo());
@@ -67,7 +71,6 @@ public class TreinoService {
 
     private TipoTreino dtoToTipoTreinoEntity(TipoTreinoRequestDTO tipoTreinoRequestDTO) {
         TipoTreino tipoTreino = new TipoTreino();
-        tipoTreino.setTreino(tipoTreinoRequestDTO.treino());
         tipoTreino.setGruposMusculares(tipoTreinoRequestDTO.gruposMusculares());
         tipoTreino.setQuantidadeSeries(tipoTreinoRequestDTO.quantidadeSeries());
         tipoTreino.setQuantidadeRepeticoes(tipoTreinoRequestDTO.quantidadeRepeticoes());
@@ -83,8 +86,13 @@ public class TreinoService {
     }
 
     public TreinoResponseDTO criarTreino(TreinoRequestDTO treinoRequestDTO) {
+        Aluno aluno = alunoRepository.findById(treinoRequestDTO.alunoId())
+            .orElseThrow(() -> new EntityNotFoundException("Aluno com ID " + treinoRequestDTO.alunoId() + " não encontrado"));
         Treino treinoEntity = dtoToEntity(treinoRequestDTO);
+        treinoEntity.setAluno(aluno);
         Treino treinoSalvo = treinoRepository.save(treinoEntity);
+        aluno.getTreinos().add(treinoSalvo);
+        alunoRepository.save(aluno);
         return entityToDTO(treinoSalvo);
     }
 
@@ -100,7 +108,9 @@ public class TreinoService {
         // se existir, atualiza os dados
         if (treino.isPresent()) {
             Treino treinoAtualizado = treino.get();
-            treinoAtualizado.setAluno(dto.aluno());
+            Aluno aluno = alunoRepository.findById(dto.alunoId())
+                .orElseThrow(() -> new EntityNotFoundException("Aluno com ID " + dto.alunoId() + " não encontrado"));
+            treinoAtualizado.setAluno(aluno);
             treinoAtualizado.setTipoEstimulo(dto.tipoEstimulo());
             treinoAtualizado.setDataCriacao(dto.dataCriacao());
             treinoAtualizado.setDataExpiracao(dto.dataExpiracao());

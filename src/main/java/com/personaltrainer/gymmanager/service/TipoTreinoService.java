@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import com.personaltrainer.gymmanager.model.dtos.TipoTreinoRequestDTO;
 import com.personaltrainer.gymmanager.model.dtos.TipoTreinoResponseDTO;
 import com.personaltrainer.gymmanager.model.entidades.TipoTreino;
+import com.personaltrainer.gymmanager.model.entidades.Treino;
 import com.personaltrainer.gymmanager.repository.TipoTreinoRepository;
+import com.personaltrainer.gymmanager.repository.TreinoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -18,23 +20,25 @@ import jakarta.transaction.Transactional;
 @Service
 @Transactional
 public class TipoTreinoService {
-    
+
     @Autowired
     private TipoTreinoRepository tipoTreinoRepository;
 
+    @Autowired
+    private TreinoRepository treinoRepository;
+
     private TipoTreinoResponseDTO entityToDTO(TipoTreino tipoTreino) {
         return new TipoTreinoResponseDTO(
-            tipoTreino.getId(), 
-            tipoTreino.getTreino() != null ? tipoTreino.getTreino().getId() : null, 
-            tipoTreino.getGruposMusculares(), 
-            tipoTreino.getQuantidadeSeries(),
-            tipoTreino.getQuantidadeRepeticoes(), 
-            tipoTreino.getExercicios());
+                tipoTreino.getId(),
+                tipoTreino.getTreino() != null ? tipoTreino.getTreino().getId() : null,
+                tipoTreino.getGruposMusculares(),
+                tipoTreino.getQuantidadeSeries(),
+                tipoTreino.getQuantidadeRepeticoes(),
+                tipoTreino.getExercicios());
     }
 
     private TipoTreino dtoToEntity(TipoTreinoRequestDTO tipoTreinoRequestDTO) {
         TipoTreino tipoTreino = new TipoTreino();
-        tipoTreino.setTreino(tipoTreinoRequestDTO.treino());
         tipoTreino.setGruposMusculares(tipoTreinoRequestDTO.gruposMusculares());
         tipoTreino.setQuantidadeSeries(tipoTreinoRequestDTO.quantidadeSeries());
         tipoTreino.setQuantidadeRepeticoes(tipoTreinoRequestDTO.quantidadeRepeticoes());
@@ -44,20 +48,25 @@ public class TipoTreinoService {
 
     public List<TipoTreinoResponseDTO> listarTipoTreinos() {
         List<TipoTreinoResponseDTO> tipoTreinos = tipoTreinoRepository.findAll()
-            .stream().map(this::entityToDTO)
-            .collect(Collectors.toList());
+                .stream().map(this::entityToDTO)
+                .collect(Collectors.toList());
         return tipoTreinos;
     }
 
     public TipoTreinoResponseDTO criarTipoTreino(TipoTreinoRequestDTO tipoTreinoRequestDTO) {
-        TipoTreino tipoTreinoEntity = dtoToEntity(tipoTreinoRequestDTO);
-        TipoTreino tipoTreinoSalvo = tipoTreinoRepository.save(tipoTreinoEntity);
+        Treino treino = treinoRepository.findById(tipoTreinoRequestDTO.treinoId())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Treino com ID " + tipoTreinoRequestDTO.treinoId() + " não encontrado"));
+        TipoTreino tipoTreino = dtoToEntity(tipoTreinoRequestDTO);
+        tipoTreino.setTreino(treino);
+        TipoTreino tipoTreinoSalvo = tipoTreinoRepository.save(tipoTreino);
         return entityToDTO(tipoTreinoSalvo);
     }
 
     public TipoTreinoResponseDTO buscarTipoTreino(Long id) {
         Optional<TipoTreino> tipoTreino = tipoTreinoRepository.findById(id);
-        return tipoTreino.map(this::entityToDTO).orElseThrow(() -> new RuntimeException("Tipo de treino não encontrado"));
+        return tipoTreino.map(this::entityToDTO)
+                .orElseThrow(() -> new RuntimeException("Tipo de treino não encontrado"));
     }
 
     public TipoTreinoResponseDTO atualizarTipoTreino(Long id, TipoTreinoRequestDTO dto) {
@@ -67,18 +76,22 @@ public class TipoTreinoService {
         // se existir, atualiza os dados
         if (tipoTreino.isPresent()) {
             TipoTreino tipoTreinoAtualizado = tipoTreino.get();
-            tipoTreinoAtualizado.setTreino(dto.treino());
+            if (dto.treinoId() != null) {
+                Treino treino = treinoRepository.findById(dto.treinoId())
+                        .orElseThrow(() -> new EntityNotFoundException("Treino com ID " + dto.treinoId() + " não encontrado"));
+                        tipoTreinoAtualizado.setTreino(treino);
+            }
             tipoTreinoAtualizado.setGruposMusculares(dto.gruposMusculares());
             tipoTreinoAtualizado.setQuantidadeSeries(dto.quantidadeSeries());
             tipoTreinoAtualizado.setQuantidadeRepeticoes(dto.quantidadeRepeticoes());
             tipoTreinoAtualizado.setExercicios(dto.exercicios());
-            
-            //salvando as alterações
+
+            // salvando as alterações
             TipoTreino tipoTreinoSalvo = tipoTreinoRepository.save(tipoTreinoAtualizado);
             return entityToDTO(tipoTreinoSalvo);
         }
 
-        //se o treino não existir
+        // se o treino não existir
         throw new EntityNotFoundException("Tipo treino com ID: " + id + " não encontrado.");
     }
 

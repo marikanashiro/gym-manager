@@ -28,13 +28,17 @@ public class Treino {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "aluno_id")
     private Aluno aluno;
+
     @Enumerated(EnumType.STRING)
     private TipoEstimulo tipoEstimulo;
+
     private LocalDate dataCriacao;
     private LocalDate dataExpiracao;
+    
     @OneToMany(mappedBy = "treino", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<TipoTreino> tipoTreinos = new ArrayList<>();
